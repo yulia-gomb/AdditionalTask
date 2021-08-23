@@ -28,17 +28,22 @@ async function getUsers(url: string) {
 mergeData(url1, url2);
 async function mergeData(url1: string, url2: string): Promise<void> {
 
+    //getting data from server
     const dataPart1: IData[] = await getUsers(url1);
     const dataPart2: IData[] = await getUsers(url2);
 
-    const getMap = (data: any, id: string) => new Map(data.map(({[id]:_id, ...res}) => [_id, {...res}]));
-
+    //getting array from unique data`s IDs
     const setID = [...new Set(dataPart1.map(({ID}) => ID)
         .concat(dataPart2.map(({ProductID}) => ProductID))
     )];
 
-    const dataPart1Mapped: Map<any, any> = getMap(dataPart1, 'ID');
-    const dataPart2Mapped: Map<any, any> = getMap(dataPart2, 'ProductID');
+    //getting Map of data
+
+    const getMap1 = (data: any, id: string) => new Map(data.map(({[id]:_id, ...res}) => [_id, {ID: _id,...res}]));
+    const getMap2 = (data: any, id: string) => new Map(data.map(({[id]:_id, ...res}) => [_id, {...res}]));
+
+    const dataPart1Mapped: Map<any, any> = getMap1(dataPart1, 'ID');
+    const dataPart2Mapped: Map<any, any> = getMap2(dataPart2, 'ProductID');
 
     //merging both data's
     const resultData = setID.map(id => ({
