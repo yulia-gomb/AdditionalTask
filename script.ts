@@ -1,20 +1,22 @@
 const url1 = 'https://services.odata.org/Experimental/OData/OData.svc/Products?$orderby=Price asc';
 const url2 ='https://services.odata.org/Experimental/OData/OData.svc/ProductDetails';
 
-interface IData {
-    ID?: number,
-    ProductID?: number,
-    Name?: string,
-    Description?: string,
-    ReleaseDate?: string,
-    DiscontinuedDate?: null | string,
-    Rating?: number,
-    Price?: number,
-    Details?: string
+interface IData1 {
+    ID: number,
+    ProductID: number,
+    Name: string,
+    Description: string,
+    ReleaseDate: string,
+    DiscontinuedDate: null | string,
+    Rating: number,
+}
+interface IData2 {
+    ProductID: number,
+    Details: string
 }
 
 //function for getting data from an endpoint
-async function getUsers(url: string) {
+async function getData(url: string) {
     try {
         const response = await fetch(url);
         const users = await response.json();
@@ -29,8 +31,8 @@ mergeData(url1, url2);
 async function mergeData(url1: string, url2: string): Promise<void> {
 
     //getting data from server
-    const dataPart1: IData[] = await getUsers(url1);
-    const dataPart2: IData[] = await getUsers(url2);
+    const dataPart1: IData1[] = await getData(url1);
+    const dataPart2: IData2[] = await getData(url2);
 
     //getting array from unique data`s IDs
     const setID = [...new Set(dataPart1.map(({ID}) => ID)
@@ -38,7 +40,6 @@ async function mergeData(url1: string, url2: string): Promise<void> {
     )];
 
     //getting Map of data
-
     const getMap1 = (data: any, id: string) => new Map(data.map(({[id]:_id, ...res}) => [_id, {ID: _id,...res}]));
     const getMap2 = (data: any, id: string) => new Map(data.map(({[id]:_id, ...res}) => [_id, {...res}]));
 
